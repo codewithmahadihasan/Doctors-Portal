@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 
 
 
+
 export const AuthContext = createContext()
 const auth = getAuth(app)
 
@@ -15,6 +16,8 @@ const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true)
 
     const [side, setSide] = useState(true)
+
+
 
 
 
@@ -38,16 +41,12 @@ const AuthProvider = ({ children }) => {
 
 
                 })
-
-                console.log(userCredential);
                 getToken(email)
 
 
 
             })
-            .catch((error) => {
-                console.log(error.message)
-            });
+
 
     }
 
@@ -80,7 +79,6 @@ const AuthProvider = ({ children }) => {
                     text: 'Login SuccessFull',
                 })
                 const user = userCredential.user;
-                console.log(user)
                 getToken(email)
 
                 // ...
@@ -104,7 +102,6 @@ const AuthProvider = ({ children }) => {
                     text: errorMessage
 
                 })
-                console.log(errorMessage);
             });
     }
 
@@ -129,7 +126,6 @@ const AuthProvider = ({ children }) => {
             })
             .catch((error) => {
                 const errorMessage = error.message;
-                console.log(errorMessage);
 
             });
     }
@@ -138,7 +134,9 @@ const AuthProvider = ({ children }) => {
         setLoading(true)
         signOut(auth)
             .then(() => {
+
                 localStorage.removeItem('token')
+
             })
             .catch((error) => {
                 // An error happened.
@@ -146,7 +144,6 @@ const AuthProvider = ({ children }) => {
     }
 
     const getToken = email => {
-        console.log(email);
         fetch(`http://localhost:5000/jwt?email=${email}`)
             .then(res => res.json())
             .then(data => {
@@ -165,8 +162,8 @@ const AuthProvider = ({ children }) => {
             setLoading(false)
             setUser(currentUser)
         })
-        return () => unsubscribe
-    }, [user])
+        return () => unsubscribe()
+    }, [])
 
     const authInfo = { google, createUser, loginWithEmail, user, logOut, setLoading, loading, side, setSide }
 

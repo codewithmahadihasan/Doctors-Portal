@@ -1,11 +1,20 @@
-import { async } from "@firebase/util";
 import { useQuery } from "@tanstack/react-query";
-import { data } from "autoprefixer";
+
 import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import useAdmin from "../../CostomHoq/Hook";
 import { AuthContext } from "../../Provider/Auth/AuthProvider";
 
 const Dashboard = () => {
   const { user, logOut } = useContext(AuthContext);
+
+  const [isAdmin] = useAdmin(user?.email, true);
+  const navigate = useNavigate();
+
+  if (isAdmin) {
+    navigate("/dashboard/all-user");
+  }
+
   const url = `http://localhost:5000/booking?email=${user.email}`;
   const { data: datas = [] } = useQuery({
     queryKey: ["booking", user?.email],
@@ -19,7 +28,6 @@ const Dashboard = () => {
       return data;
     },
   });
-  console.log(datas);
 
   return (
     <div className="p-4  ">
@@ -36,6 +44,7 @@ const Dashboard = () => {
                   <th>SERVICE</th>
                   <th>DATE</th>
                   <th>TIME</th>
+                  <th>Payment</th>
                 </tr>
               </thead>
               <tbody>
@@ -46,6 +55,19 @@ const Dashboard = () => {
                     <td>{data.subject}</td>
                     <td>{data.date}</td>
                     <td>{data.slot}</td>
+                    <td>
+                      {data.paid || !data.price ? (
+                        <span>Payed</span>
+                      ) : (
+                        <Link
+                          to={`/dashboard/payment/${data._id}`}
+                          className="btn btn-sm"
+                        >
+                          {" "}
+                          Pay{" "}
+                        </Link>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -59,7 +81,6 @@ const Dashboard = () => {
       ) : (
         <>
           <h1 className="text-5xl font-bold flex justify-center items-center py-">
-            {" "}
             Unauthorize User
           </h1>
           <div className="flex justify-center py-20">
@@ -67,7 +88,6 @@ const Dashboard = () => {
               className="px-10 py-2  bg-violet-500 rounded"
               onClick={() => logOut()}
             >
-              {" "}
               Log Out
             </button>
           </div>

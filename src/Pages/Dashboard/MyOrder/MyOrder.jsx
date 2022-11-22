@@ -1,6 +1,5 @@
-import { async } from "@firebase/util";
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 
@@ -48,6 +47,38 @@ const MyOrder = () => {
       });
   };
 
+  const doctorDelete = (id) => {
+    console.log("tap");
+    fetch(`http://localhost:5000/user/${id}`, {
+      method: "delete",
+      headers: {
+        auth: `bearer ${localStorage.getItem("token")}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.deletedCount > 0) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: "success",
+            title: "Delete successfully",
+          });
+          refetch();
+        }
+      });
+  };
+
   return (
     <div>
       <h1 className="text-4xl text-center py-10">My Order</h1>
@@ -59,8 +90,8 @@ const MyOrder = () => {
               <th>Number of user</th>
               <th>NAME</th>
               <th>Email</th>
-              <th>Request</th>
-              <th>Email</th>
+              <th>Role</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -78,7 +109,7 @@ const MyOrder = () => {
                   </button>
                 </td>
                 <td>
-                  <button>
+                  <button onClick={() => doctorDelete(user._id)}>
                     <FaTrash></FaTrash>
                   </button>
                 </td>

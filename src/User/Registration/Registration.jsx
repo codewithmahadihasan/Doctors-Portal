@@ -5,7 +5,7 @@ import { AuthContext } from "../../Provider/Auth/AuthProvider";
 
 const Registration = () => {
   const [error, setError] = useState();
-  const { createUser, google, user } = useContext(AuthContext);
+  const { createUser, google} = useContext(AuthContext);
   const navigate = useNavigate();
 
   const fromHandaler = (event) => {
@@ -70,7 +70,7 @@ const Registration = () => {
             Do you have any acount ?
             <Link
               rel="noopener noreferrer"
-              to="/login"
+              to="/login" 
               className=" text-teal-500 ml-2"
             >
               Log in now

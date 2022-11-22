@@ -3,13 +3,14 @@ import { format } from "date-fns";
 import { AuthContext } from "../../../Provider/Auth/AuthProvider";
 import Swal from "sweetalert2";
 
-const Tost = ({ data, selectDate, setTost, refetch }) => {
+const Tost = ({ data, selectDate, refetch }) => {
   const { user } = useContext(AuthContext);
 
   const formHandler = (event) => {
     event.preventDefault();
     const from = event.target;
     const subject = data.name;
+    const price = data?.price;
     const slot = from.slot.value;
     const date = format(selectDate, "PP");
     const name = from.name.value;
@@ -26,6 +27,7 @@ const Tost = ({ data, selectDate, setTost, refetch }) => {
     } else {
       const booking = {
         subject,
+        price,
         date,
         slot,
         name,
@@ -79,6 +81,12 @@ const Tost = ({ data, selectDate, setTost, refetch }) => {
               className=" bg-gray-300 py-3 rounded-xl text-start  pl-4 w-full mt-4"
             >
               {format(selectDate, "PP")}
+            </h1>
+            <h1
+              name="date"
+              className=" bg-gray-300 py-3 rounded-xl text-start  pl-4 w-full mt-4"
+            >
+              {data?.price ? `Price :  ${data?.price} Taka` : "Free"}
             </h1>
             {/* Select  */}
             <div className="form-control w-full mt-4 ">
